@@ -46,6 +46,20 @@ const Navbar = () => {
           <li className="hover:text-green-500">
             <Link to="/dashboard">Dashboard</Link>
           </li>
+
+          {/* Conditionally render Log In and Sign Up links */}
+          {!isLoggedIn && (
+            <>
+              <li className="hover:text-green-500">
+                <Link to="/login">Log In</Link>
+              </li>
+              <li>
+                <Link to="/signup" className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600">
+                  Sign Up
+                </Link>
+              </li>
+            </>
+          )}
         </ul>
 
         {/* Call-to-Action Buttons / Profile Section */}
@@ -53,7 +67,7 @@ const Navbar = () => {
           {isLoggedIn ? (
             <div className="relative">
               <img 
-                src="https://img.freepik.com/premium-photo/human-icon-3d-render-illustration_567294-4123.jpg?ga=GA1.1.579235623.1730386950&semt=ais_hybrid" 
+                src={userProfileImage || "https://img.freepik.com/premium-photo/human-icon-3d-render-illustration_567294-4123.jpg?ga=GA1.1.579235623.1730386950&semt=ais_hybrid"} 
                 alt="User Profile" 
                 className="w-10 h-10 rounded-full cursor-pointer border-2 border-green-500" 
                 onClick={toggleProfileDropdown} 
@@ -80,12 +94,7 @@ const Navbar = () => {
               )}
             </div>
           ) : (
-            <>
-              <Link to="/login" className="hover:text-green-500">Log In</Link>
-              <Link to="/signup" className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600">
-                Sign Up
-              </Link>
-            </>
+            <></> // Already handled in the menu links above
           )}
         </div>
 
@@ -102,8 +111,39 @@ const Navbar = () => {
             )}
           </svg>
         </button>
-
       </div>
+
+      {/* Mobile Menu Links */}
+      {isMenuOpen && (
+        <div className="md:hidden bg-white shadow-md py-2">
+          <ul className="space-y-4 text-center">
+            <li>
+              <Link to="/about" className="block text-black hover:text-green-500 py-2">About Us</Link>
+            </li>
+            <li>
+              <Link to="/contact" className="block text-black hover:text-green-500 py-2">Contact</Link>
+            </li>
+            <li>
+              <Link to="/dashboard" className="block text-black hover:text-green-500 py-2">Dashboard</Link>
+            </li>
+            {isLoggedIn ? (
+              <div>
+                <button 
+                  className="w-full text-left px-4 py-2 text-black hover:bg-green-100"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <div>
+                <Link to="/login" className="block text-black hover:text-green-500 py-2">Log In</Link>
+                <Link to="/signup" className="block text-white bg-green-500 py-2 px-4 rounded-md hover:bg-green-600">Sign Up</Link>
+              </div>
+            )}
+          </ul>
+        </div>
+      )}
     </nav>
   );
 };
