@@ -6,6 +6,9 @@ import Login from './pages/Login';
 import Footer from './pages/Footer';
 import Navbar from './pages/Navbar';
 import LandingPage from './pages/LandingPage';
+import Dashboard from './pages/Dashboard';
+import AboutUs from './pages/AboutUs';
+import Contact from './pages/Contact';
 
 function App() {
   return (
@@ -18,6 +21,9 @@ function App() {
         <Route path="/footer" element={<Footer />} />
         <Route path="/navbar" element={<Navbar />} />
         <Route path="/" element={<LandingPage />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/about" element={<AboutUs />} />
         
       </Routes>
     </Router>
