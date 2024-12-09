@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
-import 'font-awesome/css/font-awesome.min.css';
 
 const LandingPage = () => {
   return (
