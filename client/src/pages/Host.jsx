@@ -6,14 +6,11 @@ const Host = () => {
     start_time: "",
     end_time: "",
     timeZone: "",
-    profilePicture: null,
   });
 
-  const [profilePictureUrl, setProfilePictureUrl] = useState("");
   const [availableSlots, setAvailableSlots] = useState([]);
   const [selectedSlot, setSelectedSlot] = useState(null);
 
-  // Detect user's time zone on component mount
   useEffect(() => {
     const detectedTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     setFormData((prevData) => ({
@@ -24,7 +21,6 @@ const Host = () => {
     fetchAvailableSlots();
   }, []);
 
-  // Fetch available slots
   const fetchAvailableSlots = async () => {
     try {
       const response = await axios.get("http://localhost:5000/guest/timeslots");
@@ -40,19 +36,15 @@ const Host = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleFileChange = (e) => {
-    setFormData({ ...formData, profilePicture: e.target.files[0] });
-  };
-
   const handleCreateSlot = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/host/timeslots", {
+      await axios.post("http://localhost:5000/host/timeslots", {
         start_time: formData.start_time,
         end_time: formData.end_time,
         timezone: formData.timeZone,
       });
       alert("Slot created successfully!");
-      fetchAvailableSlots(); // Refresh available slots
+      fetchAvailableSlots();
     } catch (error) {
       console.error(error);
       alert("Failed to create slot.");
@@ -66,7 +58,7 @@ const Host = () => {
     }
 
     try {
-      const response = await axios.put(
+      await axios.put(
         `http://localhost:5000/host/timeslots/${selectedSlot.id}`,
         {
           start_time: formData.start_time,
@@ -75,7 +67,7 @@ const Host = () => {
         }
       );
       alert("Slot updated successfully!");
-      fetchAvailableSlots(); // Refresh available slots
+      fetchAvailableSlots();
     } catch (error) {
       console.error(error);
       alert("Failed to update slot.");
@@ -84,140 +76,94 @@ const Host = () => {
 
   const handleDeleteSlot = async (slotId) => {
     try {
-      const response = await axios.delete(
-        `http://localhost:5000/host/timeslots/${slotId}`
-      );
+      await axios.delete(`http://localhost:5000/host/timeslots/${slotId}`);
       alert("Slot deleted successfully!");
-      fetchAvailableSlots(); // Refresh available slots
+      fetchAvailableSlots();
     } catch (error) {
       console.error(error);
       alert("Failed to delete slot.");
     }
   };
 
-  const handleUpdateProfilePicture = async () => {
-    const formDataObj = new FormData();
-    formDataObj.append("profilePicture", formData.profilePicture);
-
-    try {
-      const response = await axios.post(
-        "http://localhost:5000/api/users/upload-profile-picture",
-        formDataObj,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-      setProfilePictureUrl(response.data.url); // Assuming the API returns the URL of the uploaded image
-      alert("Profile picture updated successfully!");
-    } catch (error) {
-      console.error(error);
-      alert("Failed to update profile picture.");
-    }
-  };
-
   return (
-    <div className="min-h-screen p-6 bg-gray-100">
-      <div className="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-6 space-y-6">
-        <h2 className="text-2xl font-bold text-gray-800">Host Dashboard</h2>
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 flex items-center justify-center py-12">
+      <div className="w-full max-w-5xl bg-white shadow-2xl rounded-3xl p-8 space-y-10">
+        <h2 className="text-4xl font-bold text-center text-gray-800">
+          MEETING SCHEDULE
+        </h2>
 
-        {/* Create Slot */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-800">Create a Slot</h3>
-          <div>
-            <label htmlFor="start_time" className="block text-gray-700">Start Time</label>
-            <input
-              type="datetime-local"
-              name="start_time"
-              value={formData.start_time}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border rounded-lg"
-            />
+        {/* Create Slot Section */}
+        <div className="space-y-6">
+          <h3 className="text-2xl font-semibold text-gray-800">Create a Slot</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label htmlFor="start_time" className="block text-gray-700">
+                Start Time
+              </label>
+              <input
+                type="datetime-local"
+                name="start_time"
+                value={formData.start_time}
+                onChange={handleInputChange}
+                className="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label htmlFor="end_time" className="block text-gray-700">
+                End Time
+              </label>
+              <input
+                type="datetime-local"
+                name="end_time"
+                value={formData.end_time}
+                onChange={handleInputChange}
+                className="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
           </div>
           <div>
-            <label htmlFor="end_time" className="block text-gray-700">End Time</label>
-            <input
-              type="datetime-local"
-              name="end_time"
-              value={formData.end_time}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border rounded-lg"
-            />
-          </div>
-          <div>
-            <label htmlFor="timeZone" className="block text-gray-700">Time Zone</label>
+            <label htmlFor="timeZone" className="block text-gray-700">
+              Time Zone
+            </label>
             <input
               type="text"
               name="timeZone"
               value={formData.timeZone}
               readOnly
-              className="w-full px-4 py-2 border rounded-lg"
+              className="w-full px-4 py-2 border rounded-lg shadow-sm bg-gray-100"
             />
           </div>
           <button
             onClick={handleCreateSlot}
-            className="w-full bg-blue-600 text-white py-2 rounded-lg"
+            className="w-full py-3 bg-green-500 text-white rounded-lg shadow-lg hover:bg-green-700 transition duration-300"
           >
             Create Slot
           </button>
         </div>
 
-        {/* Update Slot */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-800">Update a Slot</h3>
-          {selectedSlot && (
-            <>
-              <div>
-                <label htmlFor="start_time" className="block text-gray-700">Start Time</label>
-                <input
-                  type="datetime-local"
-                  name="start_time"
-                  value={formData.start_time}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border rounded-lg"
-                />
-              </div>
-              <div>
-                <label htmlFor="end_time" className="block text-gray-700">End Time</label>
-                <input
-                  type="datetime-local"
-                  name="end_time"
-                  value={formData.end_time}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border rounded-lg"
-                />
-              </div>
-              <div>
-                <label htmlFor="timeZone" className="block text-gray-700">Time Zone</label>
-                <input
-                  type="text"
-                  name="timeZone"
-                  value={formData.timeZone}
-                  readOnly
-                  className="w-full px-4 py-2 border rounded-lg"
-                />
-              </div>
-              <button
-                onClick={handleUpdateSlot}
-                className="w-full bg-yellow-600 text-white py-2 rounded-lg"
-              >
-                Update Slot
-              </button>
-            </>
-          )}
-        </div>
-
-        {/* Available Slots */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-800">Available Slots</h3>
+        {/* Available Slots Section */}
+        <div className="space-y-6">
+          <h3 className="text-2xl font-semibold text-gray-800">
+            Available Slots
+          </h3>
           {availableSlots.length > 0 ? (
-            <ul className="space-y-4">
+            <ul className="space-y-6">
               {availableSlots.map((slot) => (
-                <li key={slot.id} className="flex justify-between items-center p-4 bg-gray-200 rounded-lg">
+                <li
+                  key={slot.id}
+                  className="flex justify-between items-center p-6 bg-gray-50 shadow-lg rounded-lg hover:shadow-2xl transition-shadow duration-300"
+                >
                   <div>
-                    <p><strong>Start Time:</strong> {new Date(slot.start_time).toLocaleString()}</p>
-                    <p><strong>End Time:</strong> {new Date(slot.end_time).toLocaleString()}</p>
+                    <p className="text-gray-800">
+                      <strong>Start:</strong>{" "}
+                      {new Date(slot.start_time).toLocaleString()}
+                    </p>
+                    <p className="text-gray-800">
+                      <strong>End:</strong>{" "}
+                      {new Date(slot.end_time).toLocaleString()}
+                    </p>
                   </div>
-                  <div className="flex space-x-2">
+                  <div className="flex space-x-4">
                     <button
                       onClick={() => {
                         setSelectedSlot(slot);
@@ -227,13 +173,13 @@ const Host = () => {
                           timeZone: formData.timeZone,
                         });
                       }}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+                      className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300 shadow"
                     >
                       Update
                     </button>
                     <button
                       onClick={() => handleDeleteSlot(slot.id)}
-                      className="px-4 py-2 bg-red-600 text-white rounded-lg"
+                      className="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-300 shadow"
                     >
                       Delete
                     </button>
@@ -242,29 +188,9 @@ const Host = () => {
               ))}
             </ul>
           ) : (
-            <p>No available slots found.</p>
-          )}
-        </div>
-
-        {/* Update Profile Picture */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-800">Update Profile Picture</h3>
-          <input
-            type="file"
-            name="profilePicture"
-            onChange={handleFileChange}
-            className="w-full px-4 py-2 border rounded-lg"
-          />
-          <button
-            onClick={handleUpdateProfilePicture}
-            className="w-full bg-blue-600 text-white py-2 rounded-lg"
-          >
-            Update Profile Picture
-          </button>
-          {profilePictureUrl && (
-            <div className="mt-4">
-              <img src={profilePictureUrl} alt="Profile" className="w-32 h-32 rounded-full object-cover" />
-            </div>
+            <p className="text-gray-600 text-center">
+              No available slots found.
+            </p>
           )}
         </div>
       </div>
@@ -273,3 +199,6 @@ const Host = () => {
 };
 
 export default Host;
+
+
+
