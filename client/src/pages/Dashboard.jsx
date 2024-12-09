@@ -1,6 +1,32 @@
 import React from "react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import { Line, Pie, Bar } from "react-chartjs-2";
+import { 
+  Chart as ChartJS, 
+  CategoryScale, 
+  LinearScale, 
+  PointElement, 
+  LineElement, 
+  Title, 
+  Tooltip, 
+  Legend, 
+  BarElement, 
+  ArcElement 
+} from "chart.js";
+
+// Register Chart.js components
+ChartJS.register(
+  CategoryScale, 
+  LinearScale, 
+  PointElement, 
+  LineElement, 
+  Title, 
+  Tooltip, 
+  Legend, 
+  BarElement, 
+  ArcElement
+);
 
 const Dashboard = () => {
   // Static dummy data for Booking Trends (Line Chart)
@@ -52,57 +78,64 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="font-sans bg-gradient-to-r from-green-100 via-white to-green-100 text-black">
+
+   <div className="font-sans bg-white text-black">
+      
       {/* Navbar */}
-      <Navbar />
+      <Navbar/>
 
-      <div className="p-8 bg-white shadow-lg rounded-lg min-h-screen">
-        <h1 className="text-3xl font-bold mb-8 text-gray-800">Host Dashboard</h1>
+    <div className="p-8 bg-gray-100 min-h-screen">
+      <h1 className="text-3xl font-bold mb-8 text-gray-800">Host Dashboard</h1>
 
-        {/* Chart Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Booking Trends Line Chart */}
-          <div className="bg-white shadow-xl rounded-lg p-6 h-80 overflow-hidden flex flex-col justify-between border-l-4 border-green-500">
-            <h2 className="text-lg font-semibold text-gray-700 mb-4">Booking Trends Over Time</h2>
-            {/* Line Chart Component */}
-          </div>
+      {/* Chart Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-          {/* Popular Booking Times Pie Chart */}
-          <div className="bg-white shadow-xl rounded-lg p-6 h-80 overflow-hidden flex flex-col justify-between border-l-4 border-yellow-500">
-            <h2 className="text-lg font-semibold text-gray-700 mb-4">Popular Booking Times</h2>
-            {/* Pie Chart Component */}
-          </div>
-
-          {/* Most Booked Slots Bar Chart */}
-          <div className="bg-white shadow-xl rounded-lg p-6 h-80 overflow-hidden flex flex-col justify-between border-l-4 border-blue-500">
-            <h2 className="text-lg font-semibold text-gray-700 mb-4">Most Booked Slots</h2>
-            {/* Bar Chart Component */}
-          </div>
+        {/* Booking Trends Line Chart */}
+        <div className="bg-white shadow-lg rounded-lg p-6 h-80 overflow-hidden">
+          <h2 className="text-lg font-semibold text-gray-700 mb-4">Booking Trends Over Time</h2>
+          <Line data={bookingTrendsData} options={chartOptions} />
         </div>
 
-        {/* Export Buttons */}
-        <div className="mt-10 bg-white shadow-xl rounded-lg p-6 border-t-4 border-green-500">
-          <h2 className="text-lg font-semibold text-gray-700 mb-4">Export Booking Data</h2>
-          <div className="flex gap-4">
-            <button 
-              className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg shadow-md transition ease-in-out duration-200 transform hover:scale-105"
-              onClick={() => exportData('json')}
-            >
-              Export as JSON
-            </button>
+        {/* Popular Booking Times Pie Chart */}
+        <div className="bg-white shadow-lg rounded-lg p-6 h-80 overflow-hidden">
+          <h2 className="text-lg font-semibold text-gray-700 mb-4">Popular Booking Times</h2>
+          <Pie data={popularTimesData} options={chartOptions} />
+        </div>
 
-            <button 
-              className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg shadow-md transition ease-in-out duration-200 transform hover:scale-105"
-              onClick={() => exportData('csv')}
-            >
-              Export as CSV
-            </button>
-          </div>
+        {/* Most Booked Slots Bar Chart */}
+        <div className="bg-white shadow-lg rounded-lg p-6 h-80 overflow-hidden">
+          <h2 className="text-lg font-semibold text-gray-700 mb-4">Most Booked Slots</h2>
+          <Bar data={mostBookedSlotsData} options={chartOptions} />
+        </div>
+
+      </div>
+
+      {/* Export Buttons */}
+      <div className="mt-10 bg-white shadow-lg rounded-lg p-6">
+        <h2 className="text-lg font-semibold text-gray-700 mb-4">Export Booking Data</h2>
+        <div className="flex gap-4">
+          <button 
+            className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded" 
+            onClick={() => exportData('json')}
+          >
+            Export as JSON
+          </button>
+
+          <button 
+            className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded" 
+            onClick={() => exportData('csv')}
+          >
+            Export as CSV
+          </button>
         </div>
       </div>
 
-      <Footer />
     </div>
+
+    <Footer/>
+
+    </div>
+  
   );
 };
 
@@ -132,3 +165,4 @@ const exportData = (format) => {
 };
 
 export default Dashboard;
+
