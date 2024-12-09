@@ -33,7 +33,7 @@ MySQL (Ensure MySQL server is running)
 Git (version control)
 
 1. Clone the Repository
-git clone https://github.com/your-username/meeting-scheduler.git
+git clone https://github.com/your-username/meeting_mate_lucc.git
 cd client
 
 2. Backend Setup
